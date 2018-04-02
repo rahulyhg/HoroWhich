@@ -3,13 +3,10 @@ package ie.moses.horowhich;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Button;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static ie.moses.horowhich.ToastUtils.toast;
 
 public class WriteHoroscopeActivity extends AppCompatActivity {
 

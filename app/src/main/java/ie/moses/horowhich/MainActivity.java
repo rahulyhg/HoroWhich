@@ -94,14 +94,11 @@ public class MainActivity extends AppCompatActivity {
             public void call(List<FacebookFriend> facebookFriends) {
                 LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
                 _recyclerView.setLayoutManager(layoutManager);
-                FriendsListAdapter adapter = new FriendsListAdapter(MainActivity.this, facebookFriends, new OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(int position) {
-                        FacebookFriend facebookFriend = facebookFriends.get(position);
-                        Intent intent = new Intent(MainActivity.this, WriteHoroscopeActivity.class);
-                        intent.putExtra(WriteHoroscopeActivity.FACEBOOK_FRIEND_ID, facebookFriend.getId());
-                        startActivity(intent);
-                    }
+                FriendsListAdapter adapter = new FriendsListAdapter(MainActivity.this, facebookFriends, position -> {
+                    FacebookFriend facebookFriend = facebookFriends.get(position);
+                    Intent intent = new Intent(MainActivity.this, WriteHoroscopeActivity.class);
+                    intent.putExtra(WriteHoroscopeActivity.FACEBOOK_FRIEND_ID, facebookFriend.getId());
+                    startActivity(intent);
                 });
                 _recyclerView.setAdapter(adapter);
             }

@@ -24,6 +24,7 @@
             android:layout_marginLeft="50dp"
             android:layout_marginStart="50dp"
             android:text="@string/cancel"
+            android:background="#FFFFFF"
             android:layout_marginBottom="30dp"/>
 
     <Button
@@ -35,6 +36,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginRight="50dp"
             android:layout_marginEnd="50dp"
+            android:background="#FFFFFF"
             android:text="@string/done"
             android:layout_marginBottom="30dp"/>
 
