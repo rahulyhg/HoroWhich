@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "62736394",
+    "firebase_url": "https://horowhich.firebaseio.com",
+    "project_id": "horowhich",
+    "storage_bucket": "horowhich.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62736394:android:6fcba5802a415f9b",
+        "android_client_info": {
+          "package_name": "ie.moses.horowhich"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "62736394-fug6m27hg5m981u5m2n44eotr8jktfb0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ie.moses.horowhich",
+            "certificate_hash": "182270aab12074468677ffa04591702396ae5a78"
+          }
+        },
+        {
+          "client_id": "62736394-oal3644qu5fahqp3n0k1f8n9gcj1rs1c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-oTOZN8ZxTtqS-darbPXG5u4sqrx7DbM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "62736394-oal3644qu5fahqp3n0k1f8n9gcj1rs1c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

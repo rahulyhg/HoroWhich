@@ -14,9 +14,12 @@ import butterknife.ButterKnife;
 import com.facebook.*;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
+import static ie.moses.horowhich.CollectionUtils.list;
 import static ie.moses.horowhich.ToastUtils.toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -68,6 +71,15 @@ public class MainActivity extends AppCompatActivity {
         if (FacebookUtils.isLoggedIn()) {
             loadFriendsList();
         }
+
+        // Write a message to the database
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users");
+
+        DatabaseReference horoscopesRef = myRef.child(Profile.getCurrentProfile().getId()).child("horoscopes");
+        horoscopesRef.child(String.valueOf(System.currentTimeMillis())).setValue("you're going to die tomorrow");
+        horoscopesRef.child(String.valueOf(System.currentTimeMillis())).setValue("you're getting ride");
+        horoscopesRef.child(String.valueOf(System.currentTimeMillis())).setValue("mercury is in retrograde");
     }
 
     @Override
