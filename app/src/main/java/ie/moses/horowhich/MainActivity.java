@@ -2,6 +2,7 @@ package ie.moses.horowhich;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
+import com.facebook.GraphRequestBatch;
 import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.login.LoginResult;
@@ -24,10 +26,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static ie.moses.horowhich.ToastUtils.toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -68,82 +73,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Profile profile = Profile.getCurrentProfile();
-        Log.i("mo", "logged in as  " + profile.getName());
-
-        GraphRequest.newGraphPathRequest(
-                AccessToken.getCurrentAccessToken(),
-                "/me/friends",
-                response -> {
-                    Log.i("mo", "completed graph request");
-                    Log.i("mo", "response = " + response.getRawResponse());
-
-                    try {
-                        JSONObject root = response.getJSONObject();
-                        JSONArray data = root.getJSONArray("data");
-                        final List<String> friendNames = new ArrayList<>();
-                        final List<String> friendProfilePics = new ArrayList<>();
-                        for(int i = 0; i < data.length(); i++) {
-                            JSONObject friend = data.getJSONObject(i);
-                            friendNames.add(friend.getString("name"));
-                            String userId = friend.getString("id");
-                            Log.v("mo", "found friend " + userId);
-                            getProfilePicUrl(userId, s -> {
-                                Log.i("mo", "friend = " + s);
-                                friendProfilePics.add(s);
-                            });
-                        }
-
-//                        _recyclerView.setHasFixedSize(true);
-                        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-                        _recyclerView.setLayoutManager(layoutManager);
-
-                        new Thread(){
-                            @Override public void run() {
-                                while(friendProfilePics.size() < 2) {
-                                    try {
-                                        Thread.sleep(100);
-                                    }catch(InterruptedException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }
-
-                                runOnUiThread(() -> {
-                                    Log.i("mo", "friends = " + friendProfilePics);
-                                    final FriendsListAdapter adapter = new FriendsListAdapter(
-                                            MainActivity.this, friendNames, friendProfilePics);
-                                    _recyclerView.setAdapter(adapter);
-                                });
-
-                            }
-                        }.start();
-
-                    }catch(JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }).executeAsync();
-    }
-
-    private void getProfilePicUrl(final String userId, final Callback<String> callback) {
-        Bundle params = new Bundle();
-        params.putBoolean("redirect", false);
-        params.putString("type", "square");
-
-        new GraphRequest(
-                AccessToken.getCurrentAccessToken(),
-                userId + "/picture",
-                params,
-                HttpMethod.GET,
-                response -> {
-                    try {
-                        String profilePicUrl = (String) response.getJSONObject().getJSONObject("data").get("url");
-                        callback.call(profilePicUrl);
-                    }catch(JSONException e) {
-                        Log.e("moo", "json exception", e);
-                    }
+        if(FacebookUtils.isLoggedIn()) {
+            GraphUtils.getFacebookFriends(AccessToken.getCurrentAccessToken(), new TryFailCallback<List<FacebookFriend>>() {
+                @Override
+                public void call(List<FacebookFriend> facebookFriends) {
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
+                    _recyclerView.setLayoutManager(layoutManager);
+                    FriendsListAdapter adapter = new FriendsListAdapter(MainActivity.this, facebookFriends);
+                    _recyclerView.setAdapter(adapter);
                 }
-        ).executeAsync();
+
+                @Override
+                public void onFailure(@Nullable Throwable error) {
+                   toast(MainActivity.this, "Failed to load facebook friends :(");
+                   Log.e(TAG, "failed to load facebook friends", error);
+                }
+            });
+        }else {
+            toast(MainActivity.this, "you're not logged in!");
+        }
     }
 
     @Override

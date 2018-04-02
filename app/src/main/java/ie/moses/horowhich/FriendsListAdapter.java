@@ -2,22 +2,25 @@ package ie.moses.horowhich;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ViewGroup;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
 
 class FriendsListAdapter extends RecyclerView.Adapter {
 
-    private final Context _context;
-    private final List<String> _userNames;
-    private final List<String> _userProfilePics;
+    private static final String TAG = FriendsListAdapter.class.getSimpleName();
 
-    public FriendsListAdapter(final Context context, final List<String> userNames, final List<String> userProfilePics) {
+    private final Context _context;
+    private final List<FacebookFriend> _facebookFriends;
+
+    public FriendsListAdapter(final Context context, final List<FacebookFriend> facebookFriends) {
         _context = context;
-        _userNames = new ArrayList<>(userNames);
-        _userProfilePics = new ArrayList<>(userProfilePics);
+        _facebookFriends = new ArrayList<>(facebookFriends);
     }
 
     @NonNull
@@ -28,13 +31,25 @@ class FriendsListAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
-        ((FriendView) holder.itemView).setName(_userNames.get(position));
-        ((FriendView) holder.itemView).setProfilePic(_userProfilePics.get(position));
+        FacebookFriend facebookFriend = _facebookFriends.get(position);
+        ((FriendView) holder.itemView).setName(facebookFriend.getName());
+
+        GraphUtils.makeUserProfilePicGraphRequest(facebookFriend.getId(), new TryFailCallback<String>() {
+            @Override
+            public void call(String profilePicUrl) {
+                ((FriendView) holder.itemView).setProfilePic(profilePicUrl);
+            }
+
+            @Override
+            public void onFailure(@Nullable Throwable error) {
+                Log.e(TAG, "failed to set profile pic", error);
+            }
+        }).executeAsync();
     }
 
     @Override
     public int getItemCount() {
-        return _userProfilePics.size();
+        return _facebookFriends.size();
     }
 
     private static class ViewHolder extends RecyclerView.ViewHolder {
