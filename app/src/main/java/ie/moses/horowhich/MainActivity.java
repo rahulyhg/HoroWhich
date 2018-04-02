@@ -14,12 +14,11 @@ import butterknife.ButterKnife;
 import com.facebook.*;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static ie.moses.horowhich.CollectionUtils.list;
 import static ie.moses.horowhich.ToastUtils.toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -77,9 +76,44 @@ public class MainActivity extends AppCompatActivity {
         DatabaseReference myRef = database.getReference("users");
 
         DatabaseReference horoscopesRef = myRef.child(Profile.getCurrentProfile().getId()).child("horoscopes");
-        horoscopesRef.child(String.valueOf(System.currentTimeMillis())).setValue("you're going to die tomorrow");
-        horoscopesRef.child(String.valueOf(System.currentTimeMillis())).setValue("you're getting ride");
-        horoscopesRef.child(String.valueOf(System.currentTimeMillis())).setValue("mercury is in retrograde");
+
+        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("you're going to die tomorrow");
+
+        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("you're getting ride");
+
+        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("mercury is in retrograde");
+
+        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("you're going to die tomorrow");
+
+        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("you're getting ride");
+
+        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("mercury is in retrograde");
+
+        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("you're going to die tomorrow");
+
+        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("you're getting ride");
+
+        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("mercury is in retrograde");
+
+
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String> horoscopes = new ArrayList<>((int) dataSnapshot.getChildrenCount());
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    String horoscope = (String) snap.getValue();
+                    horoscopes.add(horoscope);
+                }
+
+                Log.i("mo", "horoscopes " + horoscopes);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("mo", "loadPost:onCancelled", databaseError.toException());
+            }
+        };
+        horoscopesRef.addValueEventListener(postListener);
     }
 
     @Override
