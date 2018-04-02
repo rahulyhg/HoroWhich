@@ -7,11 +7,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -26,7 +23,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,12 +81,42 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         JSONObject root = response.getJSONObject();
                         JSONArray data = root.getJSONArray("data");
+                        final List<String> friends = new ArrayList<>();
                         for(int i = 0; i < data.length(); i++) {
                             JSONObject friend = data.getJSONObject(i);
                             String userId = friend.getString("id");
                             Log.v("mo", "found friend " + userId);
-                            getProfilePic(userId);
+                            getProfilePicUrl(userId, s -> {
+                                Log.i("mo", "friend = " + s);
+                                friends.add(s);
+                            });
                         }
+
+//                        _recyclerView.setHasFixedSize(true);
+                        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+                        _recyclerView.setLayoutManager(layoutManager);
+
+                        new Thread(){
+                            @Override public void run() {
+                                while(friends.size() < 2) {
+                                    try {
+                                        Thread.sleep(100);
+                                    }catch(InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+
+                                runOnUiThread(new Runnable() {
+                                    @Override public void run() {
+                                        Log.i("mo", "friends = " + friends);
+                                        final FriendsListAdapter adapter = new FriendsListAdapter(MainActivity.this, friends);
+                                        _recyclerView.setAdapter(adapter);
+                                    }
+                                });
+
+                            }
+                        }.start();
+
                     }catch(JSONException e) {
                         e.printStackTrace();
                     }
@@ -96,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 }).executeAsync();
     }
 
-    private void getProfilePic(final String userId) {
+    private void getProfilePicUrl(final String userId, final Callback<String> callback) {
         Bundle params = new Bundle();
         params.putBoolean("redirect", false);
         params.putString("type", "large");
@@ -109,15 +137,7 @@ public class MainActivity extends AppCompatActivity {
                 response -> {
                     try {
                         String profilePicUrl = (String) response.getJSONObject().getJSONObject("data").get("url");
-//                        Glide.with(MainActivity.this).load(profilePicUrl).into(_profileView);
-
-//                        _recyclerView.setHasFixedSize(true);
-                        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-                        _recyclerView.setLayoutManager(layoutManager);
-
-                        _recyclerView.setAdapter(
-                                new FriendsListAdapter(MainActivity.this, Arrays.asList(profilePicUrl)));
-
+                        callback.call(profilePicUrl);
                     }catch(JSONException e) {
                         Log.e("moo", "json exception", e);
                     }
