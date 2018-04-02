@@ -3,9 +3,12 @@ package ie.moses.horowhich;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -23,6 +26,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -35,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.splash_view) View _splashView;
     @BindView(R.id.login_button) LoginButton _facebookLoginButton;
 
-    @BindView(R.id.profile_view) ImageView _profileView;
+    @BindView(R.id.recycler_view) RecyclerView _recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +109,15 @@ public class MainActivity extends AppCompatActivity {
                 response -> {
                     try {
                         String profilePicUrl = (String) response.getJSONObject().getJSONObject("data").get("url");
-                        Glide.with(MainActivity.this).load(profilePicUrl).into(_profileView);
+//                        Glide.with(MainActivity.this).load(profilePicUrl).into(_profileView);
+
+//                        _recyclerView.setHasFixedSize(true);
+                        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+                        _recyclerView.setLayoutManager(layoutManager);
+
+                        _recyclerView.setAdapter(
+                                new FriendsListAdapter(MainActivity.this, Arrays.asList(profilePicUrl)));
+
                     }catch(JSONException e) {
                         Log.e("moo", "json exception", e);
                     }
