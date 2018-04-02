@@ -81,14 +81,16 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         JSONObject root = response.getJSONObject();
                         JSONArray data = root.getJSONArray("data");
-                        final List<String> friends = new ArrayList<>();
+                        final List<String> friendNames = new ArrayList<>();
+                        final List<String> friendProfilePics = new ArrayList<>();
                         for(int i = 0; i < data.length(); i++) {
                             JSONObject friend = data.getJSONObject(i);
+                            friendNames.add(friend.getString("name"));
                             String userId = friend.getString("id");
                             Log.v("mo", "found friend " + userId);
                             getProfilePicUrl(userId, s -> {
                                 Log.i("mo", "friend = " + s);
-                                friends.add(s);
+                                friendProfilePics.add(s);
                             });
                         }
 
@@ -98,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
                         new Thread(){
                             @Override public void run() {
-                                while(friends.size() < 2) {
+                                while(friendProfilePics.size() < 2) {
                                     try {
                                         Thread.sleep(100);
                                     }catch(InterruptedException e) {
@@ -106,12 +108,11 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 }
 
-                                runOnUiThread(new Runnable() {
-                                    @Override public void run() {
-                                        Log.i("mo", "friends = " + friends);
-                                        final FriendsListAdapter adapter = new FriendsListAdapter(MainActivity.this, friends);
-                                        _recyclerView.setAdapter(adapter);
-                                    }
+                                runOnUiThread(() -> {
+                                    Log.i("mo", "friends = " + friendProfilePics);
+                                    final FriendsListAdapter adapter = new FriendsListAdapter(
+                                            MainActivity.this, friendNames, friendProfilePics);
+                                    _recyclerView.setAdapter(adapter);
                                 });
 
                             }
@@ -127,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
     private void getProfilePicUrl(final String userId, final Callback<String> callback) {
         Bundle params = new Bundle();
         params.putBoolean("redirect", false);
-        params.putString("type", "large");
+        params.putString("type", "square");
 
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
