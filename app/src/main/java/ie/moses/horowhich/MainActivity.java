@@ -8,15 +8,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.facebook.*;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.firebase.database.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static ie.moses.horowhich.ToastUtils.toast;
@@ -27,13 +26,10 @@ public class MainActivity extends AppCompatActivity {
 
     CallbackManager _callbackManager;
 
-    @BindView(R.id.splash_view)
-    View _splashView;
-    @BindView(R.id.login_button)
-    LoginButton _facebookLoginButton;
+    @BindView(R.id.splash_view) View _splashView;
+    @BindView(R.id.login_button) LoginButton _facebookLoginButton;
 
-    @BindView(R.id.recycler_view)
-    RecyclerView _recyclerView;
+    @BindView(R.id.recycler_view) RecyclerView _recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,50 +66,6 @@ public class MainActivity extends AppCompatActivity {
         if (FacebookUtils.isLoggedIn()) {
             loadFriendsList();
         }
-
-        // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users");
-
-        DatabaseReference horoscopesRef = myRef.child(Profile.getCurrentProfile().getId()).child("horoscopes");
-
-        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("you're going to die tomorrow");
-
-        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("you're getting ride");
-
-        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("mercury is in retrograde");
-
-        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("you're going to die tomorrow");
-
-        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("you're getting ride");
-
-        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("mercury is in retrograde");
-
-        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("you're going to die tomorrow");
-
-        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("you're getting ride");
-
-        horoscopesRef.child(String.valueOf(System.currentTimeMillis() + ((int) (Math.random() * 10000)))).setValue("mercury is in retrograde");
-
-
-        ValueEventListener postListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<String> horoscopes = new ArrayList<>((int) dataSnapshot.getChildrenCount());
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    String horoscope = (String) snap.getValue();
-                    horoscopes.add(horoscope);
-                }
-
-                Log.i("mo", "horoscopes " + horoscopes);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w("mo", "loadPost:onCancelled", databaseError.toException());
-            }
-        };
-        horoscopesRef.addValueEventListener(postListener);
     }
 
     @Override
@@ -142,7 +94,15 @@ public class MainActivity extends AppCompatActivity {
             public void call(List<FacebookFriend> facebookFriends) {
                 LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
                 _recyclerView.setLayoutManager(layoutManager);
-                FriendsListAdapter adapter = new FriendsListAdapter(MainActivity.this, facebookFriends);
+                FriendsListAdapter adapter = new FriendsListAdapter(MainActivity.this, facebookFriends, new OnItemClickListener() {
+                    @Override
+                    public void onItemClicked(int position) {
+                        FacebookFriend facebookFriend = facebookFriends.get(position);
+                        Intent intent = new Intent(MainActivity.this, WriteHoroscopeActivity.class);
+                        intent.putExtra(WriteHoroscopeActivity.FACEBOOK_FRIEND_ID, facebookFriend.getId());
+                        startActivity(intent);
+                    }
+                });
                 _recyclerView.setAdapter(adapter);
             }
 

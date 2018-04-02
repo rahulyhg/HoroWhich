@@ -22,4 +22,10 @@
             android:textSize="16sp"
             tools:text="Harry Johnson"/>
 
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#746f6f"
+            android:layout_alignParentBottom="true"/>
+
 </RelativeLayout>

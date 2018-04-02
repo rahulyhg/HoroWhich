@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 
@@ -17,10 +18,12 @@ class FriendsListAdapter extends RecyclerView.Adapter {
 
     private final Context _context;
     private final List<FacebookFriend> _facebookFriends;
+    @Nullable private OnItemClickListener _onItemClickListener;
 
-    public FriendsListAdapter(final Context context, final List<FacebookFriend> facebookFriends) {
+    public FriendsListAdapter(final Context context, final List<FacebookFriend> friends, @Nullable OnItemClickListener listener) {
         _context = context;
-        _facebookFriends = new ArrayList<>(facebookFriends);
+        _facebookFriends = new ArrayList<>(friends);
+        _onItemClickListener = listener;
     }
 
     @NonNull
@@ -33,6 +36,11 @@ class FriendsListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         FacebookFriend facebookFriend = _facebookFriends.get(position);
         ((FriendView) holder.itemView).setName(facebookFriend.getName());
+        holder.itemView.setOnClickListener(view -> {
+            if (_onItemClickListener != null) {
+                _onItemClickListener.onItemClicked(position);
+            }
+        });
 
         GraphUtils.makeUserProfilePicGraphRequest(facebookFriend.getId(), new TryFailCallback<String>() {
             @Override
@@ -51,6 +59,11 @@ class FriendsListAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
         return _facebookFriends.size();
     }
+
+//    public void setOnItemClickListener(@Nullable OnItemClickListener onItemClickListener) {
+//        _onItemClickListener = onItemClickListener;
+//        notifyDataSetChanged();
+//    }
 
     private static class ViewHolder extends RecyclerView.ViewHolder {
 
