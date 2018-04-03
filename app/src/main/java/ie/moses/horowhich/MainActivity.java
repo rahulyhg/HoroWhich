@@ -73,27 +73,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(Profile.getCurrentProfile() != null) {
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("users");
-            DatabaseReference horoscopesRef = myRef.child(Profile.getCurrentProfile().getId()).child("horoscopes");
-
-            ValueEventListener postListener = new ValueEventListener() {
+            Profile currentProfile = Profile.getCurrentProfile();
+            DatabaseReference horoscopesRef = FirebaseUtils.getHoroscopesDatabaseReference(currentProfile.getId());
+            horoscopesRef.addValueEventListener(new HoroscopesValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    _newHoroscopesCounter.setText(String.valueOf(dataSnapshot.getChildrenCount()));
-
-                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                        String horoscope = (String) snap.getValue();
-//                    showNotification("New Horoscope", horoscope);
-                    }
+                public void onDataChanged(List<Horoscope> horoscopes) {
+                    _newHoroscopesCounter.setText(String.valueOf(horoscopes.size()));
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    Log.w("mo", "loadPost:onCancelled", databaseError.toException());
+                    Log.e(TAG, "failed to retrieve updated horoscopes, database error", databaseError.toException());
                 }
-            };
-            horoscopesRef.addValueEventListener(postListener);
+            });
         }
     }
 
