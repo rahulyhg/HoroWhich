@@ -12,4 +12,17 @@ public final class FirebaseUtils {
         horoscopesRef.child(String.valueOf(System.currentTimeMillis())).setValue(horoscope);
     }
 
+    public static DatabaseReference getHoroscopesDatabaseReference(String userId) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users");
+        return myRef.child(userId).child("horoscopes");
+    }
+
+    /**
+     * TODO: Add no such horroscope exception.
+     * */
+    public static void deleteHoroscope(String userId, Horoscope horoscope) {
+        getHoroscopesDatabaseReference(userId).child(horoscope._timestamp).removeValue();
+    }
+
 }

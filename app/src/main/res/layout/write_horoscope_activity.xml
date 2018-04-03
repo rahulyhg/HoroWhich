@@ -12,6 +12,7 @@
             android:layout_above="@+id/cancel_button"
             android:background="#FFFFFF"
             android:textSize="20sp"
+            android:maxLength="140"
             tools:text="You're getting the ride today."/>
 
     <Button

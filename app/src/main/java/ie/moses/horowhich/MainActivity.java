@@ -13,15 +13,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.facebook.*;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.database.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static ie.moses.horowhich.ToastUtils.toast;
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.login_button) LoginButton _facebookLoginButton;
 
     @BindView(R.id.recycler_view) RecyclerView _recyclerView;
+
+    @BindView(R.id.new_horoscopes_counter) TextView _newHoroscopesCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +83,11 @@ public class MainActivity extends AppCompatActivity {
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                _newHoroscopesCounter.setText(String.valueOf(dataSnapshot.getChildrenCount()));
+
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
                     String horoscope = (String) snap.getValue();
-                    showNotification("New Horoscope", horoscope);
+//                    showNotification("New Horoscope", horoscope);
                 }
             }
 
@@ -98,6 +103,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         _callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @OnClick(R.id.horoscopes_button)
+    public void launchHoroscopeReaderActivity(){
+        Intent intent = new Intent(this, HoroscopeReaderActivity.class);
+        startActivity(intent);
     }
 
     private void hideSplashScreen() {
