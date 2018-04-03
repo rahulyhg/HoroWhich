@@ -11,6 +11,7 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/super_light_purple"
             android:scrollbars="vertical"/>
 
     <com.facebook.login.widget.LoginButton
@@ -21,44 +22,28 @@
             android:layout_marginBottom="30dp"
             android:layout_marginTop="30dp"/>
 
-    <FrameLayout
-            android:id="@+id/horoscopes_button"
+    <TextView
+            android:id="@+id/new_horoscopes_counter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/circle"
+            android:textSize="24sp"
+            android:gravity="center"
             android:layout_gravity="bottom|end"
-            android:layout_marginBottom="25dp"
+            android:layout_marginBottom="45dp"
             android:layout_marginRight="10dp"
             android:clickable="true"
             android:layout_marginEnd="10dp"
-            android:focusable="true">
-
-        <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_gravity="bottom|start"
-                android:layout_height="wrap_content"/>
-
-        <TextView
-                android:id="@+id/new_horoscopes_counter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                android:layout_gravity="top|end"
-                android:elevation="7dp"
-                android:background="#22c71c"
-                android:textSize="24sp"
-                android:text="@string/_0"
-                tools:text="2"
-                tools:targetApi="lollipop"/>
-    </FrameLayout>
+            android:focusable="true"
+            android:text="@string/_0"
+            tools:text="2"/>
 
     <FrameLayout
             android:id="@+id/splash_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:visibility="gone"
-            android:background="#8e19a3">
+            android:background="@color/purple">
 
         <TextView
                 android:layout_width="wrap_content"

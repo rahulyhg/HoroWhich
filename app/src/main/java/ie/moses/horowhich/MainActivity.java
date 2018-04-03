@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    CallbackManager _callbackManager;
+    private CallbackManager _callbackManager;
 
     @BindView(R.id.splash_view) View _splashView;
     @BindView(R.id.login_button) LoginButton _facebookLoginButton;
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         _callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    @OnClick(R.id.horoscopes_button)
+    @OnClick(R.id.new_horoscopes_counter)
     public void launchHoroscopeReaderActivity(){
         Intent intent = new Intent(this, HoroscopeReaderActivity.class);
         startActivity(intent);
