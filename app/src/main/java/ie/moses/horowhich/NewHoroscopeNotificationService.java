@@ -16,9 +16,9 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.util.List;
 
-public class FirebaseDataChangedService extends Service {
+public class NewHoroscopeNotificationService extends Service {
 
-    private static final String TAG = FirebaseDataChangedService.class.getSimpleName();
+    private static final String TAG = NewHoroscopeNotificationService.class.getSimpleName();
 
     public static final String HAS_NEW_HOROSCOPE = "HAS_NEW_HOROSCOPE";
     public static final String NEW_HOROSCOPE = "NEW_HOROSCOPE";
