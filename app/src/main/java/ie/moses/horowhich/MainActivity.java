@@ -76,27 +76,29 @@ public class MainActivity extends AppCompatActivity {
             loadFriendsList();
         }
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users");
-        DatabaseReference horoscopesRef = myRef.child(Profile.getCurrentProfile().getId()).child("horoscopes");
+        if(Profile.getCurrentProfile() != null) {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("users");
+            DatabaseReference horoscopesRef = myRef.child(Profile.getCurrentProfile().getId()).child("horoscopes");
 
-        ValueEventListener postListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                _newHoroscopesCounter.setText(String.valueOf(dataSnapshot.getChildrenCount()));
+            ValueEventListener postListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    _newHoroscopesCounter.setText(String.valueOf(dataSnapshot.getChildrenCount()));
 
-                for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                    String horoscope = (String) snap.getValue();
+                    for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                        String horoscope = (String) snap.getValue();
 //                    showNotification("New Horoscope", horoscope);
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w("mo", "loadPost:onCancelled", databaseError.toException());
-            }
-        };
-        horoscopesRef.addValueEventListener(postListener);
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.w("mo", "loadPost:onCancelled", databaseError.toException());
+                }
+            };
+            horoscopesRef.addValueEventListener(postListener);
+        }
     }
 
     @Override

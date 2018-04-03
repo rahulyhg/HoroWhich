@@ -32,13 +32,13 @@ public class HoroscopesListAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(new TextView(_context));
+        return new ViewHolder(new HoroscopeView(_context));
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         String horoscopeText = _horoscopes.get(position)._text;
-        ((TextView) holder.itemView).setText(horoscopeText);
+        ((HoroscopeView) holder.itemView).setText(horoscopeText);
         holder.itemView.setOnClickListener(view -> {
             if (_onItemClickListener != null) {
                 _onItemClickListener.onItemClicked(position);

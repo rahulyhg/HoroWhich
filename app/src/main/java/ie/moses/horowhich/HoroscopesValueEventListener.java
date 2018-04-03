@@ -13,7 +13,7 @@ public abstract class HoroscopesValueEventListener implements ValueEventListener
         List<Horoscope> horoscopes = new ArrayList<>((int) dataSnapshot.getChildrenCount());
 
         for (DataSnapshot snap : dataSnapshot.getChildren()) {
-            Horoscope horoscope = snap.getValue(Horoscope.class);
+            Horoscope horoscope = new Horoscope(snap.getKey(), snap.getValue(String.class));
             horoscopes.add(horoscope);
         }
 

@@ -12,7 +12,7 @@ public class Horoscope {
 
     }
 
-    public Horoscope(String text, String timestamp) {
+    public Horoscope(String timestamp, String text) {
         _text = text;
         _timestamp = timestamp;
     }
