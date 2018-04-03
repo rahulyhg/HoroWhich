@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startService(new Intent(this, FirebaseDataChangedService.class));
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
@@ -148,28 +149,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "failed to load facebook friends", error);
             }
         });
-    }
-
-    void showNotification(String title, String content) {
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("default",
-                    "YOUR_CHANNEL_NAME",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription("YOUR_NOTIFICATION_CHANNEL_DISCRIPTION");
-            mNotificationManager.createNotificationChannel(channel);
-        }
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "default")
-                .setSmallIcon(R.mipmap.ic_launcher) // notification icon
-                .setContentTitle(title) // title for notification
-                .setContentText(content)// message for notification
-//                .setSound(alarmSound) // set alarm sound for notification
-                .setAutoCancel(true); // clear notification after click
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(pi);
-        mNotificationManager.notify(0, mBuilder.build());
     }
 
 }
