@@ -48,7 +48,7 @@ public class NewHoroscopeNotificationService extends Service {
                         initialDataLoaded = true;
                     } else {
                         if (horoscopes.size() > _horoscopes.size()) {
-                            showNotification("New Horoscope!", horoscopes.get(horoscopes.size() - 1)._text);
+                            showNotification("New Horoscope!", horoscopes.get(horoscopes.size() - 1).getText());
                         }
 
                         _horoscopes = horoscopes;

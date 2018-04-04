@@ -22,7 +22,7 @@ public final class FirebaseUtils {
      * TODO: Add no such horroscope exception.
      * */
     public static void deleteHoroscope(String userId, Horoscope horoscope) {
-        getHoroscopesDatabaseReference(userId).child(horoscope._timestamp).removeValue();
+        getHoroscopesDatabaseReference(userId).child(String.valueOf(horoscope.getCreationTimeMillis())).removeValue();
     }
 
 }

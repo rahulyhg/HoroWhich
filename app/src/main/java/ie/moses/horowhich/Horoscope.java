@@ -2,32 +2,27 @@ package ie.moses.horowhich;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.google.firebase.database.IgnoreExtraProperties;
+import org.joda.time.DateTime;
 
-@IgnoreExtraProperties
 public class Horoscope implements Parcelable {
 
-    public String _text;
-    public String _timestamp;
+    private long _creationTimeMillis;
+    private String _text;
 
-    public Horoscope() {
-
-    }
-
-    public Horoscope(String timestamp, String text) {
+    public Horoscope(final long creationTimeMillis, final String text) {
+        _creationTimeMillis = creationTimeMillis;
         _text = text;
-        _timestamp = timestamp;
     }
 
-    protected Horoscope(Parcel in) {
+    private Horoscope(Parcel in) {
+        _creationTimeMillis = in.readLong();
         _text = in.readString();
-        _timestamp = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(_creationTimeMillis);
         dest.writeString(_text);
-        dest.writeString(_timestamp);
     }
 
     @Override
@@ -46,4 +41,17 @@ public class Horoscope implements Parcelable {
             return new Horoscope[size];
         }
     };
+
+    public long getCreationTimeMillis() {
+        return _creationTimeMillis;
+    }
+
+    public String getText() {
+        return _text;
+    }
+
+    @Override
+    public String toString() {
+        return new DateTime(_creationTimeMillis).toString() + ": " + _text;
+    }
 }

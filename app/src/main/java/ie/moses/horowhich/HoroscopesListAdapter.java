@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +36,7 @@ public class HoroscopesListAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        String horoscopeText = _horoscopes.get(position)._text;
+        String horoscopeText = _horoscopes.get(position).getText();
         ((HoroscopeView) holder.itemView).setText(horoscopeText);
         holder.itemView.setOnClickListener(view -> {
             if (_onItemClickListener != null) {

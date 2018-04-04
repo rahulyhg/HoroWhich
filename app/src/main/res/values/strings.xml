@@ -1,9 +1,10 @@
 <resources>
-    <string name="app_name">HoroWhich</string>
+    <string name="app_name">Horowhich</string>
     <string name="horowhich">HoroWhich</string>
     <string name="facebook_app_id">164211390958156</string>
     <string name="fb_login_protocol_scheme">fb164211390958156</string>
     <string name="cancel">Cancel</string>
     <string name="done">Done</string>
     <string name="_0">0</string>
+    <string name="no_horoscope_today">No horoscope today.</string>
 </resources>

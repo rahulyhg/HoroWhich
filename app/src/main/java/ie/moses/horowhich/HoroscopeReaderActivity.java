@@ -68,7 +68,7 @@ public class HoroscopeReaderActivity extends AppCompatActivity {
 
     private void openHoroscope(Horoscope horoscope) {
         _currentHoroscope = horoscope;
-        _horoscopeText.setText(horoscope._text);
+        _horoscopeText.setText(horoscope.getText());
         _readHoroscopeView.setVisibility(View.VISIBLE);
     }
 
