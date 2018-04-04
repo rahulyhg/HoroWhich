@@ -1,5 +1,6 @@
 package ie.moses.horowhich;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.facebook.Profile;
+import com.facebook.*;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
@@ -26,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.no_horoscopes_view) View _noHoroscopesView;
     @BindView(R.id.star_sign_background) ImageView _starSignBackground;
     @BindView(R.id.todays_horoscope) TextView _todaysHoroscope;
+    @BindView(R.id.login_button) LoginButton _facebookLoginButton;
+
+    private CallbackManager _callbackManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,12 +39,55 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main_activity);
         ButterKnife.bind(this);
 
-        Horoscope savedHoroscope = SharedPreferencesUtils.getTodaysHoroscope(this);
-        if (savedHoroscope != null) {
-            setTodaysHoroscope(savedHoroscope);
+        _callbackManager = CallbackManager.Factory.create();
+        _facebookLoginButton.setReadPermissions("public_profile", "user_friends");
+        _facebookLoginButton.registerCallback(_callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(final LoginResult loginResult) {
+                new ProfileTracker() {
+                    @Override
+                    protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                        _todaysHoroscope.setText("");
+                        init();
+                    }
+                };
+            }
+
+            @Override
+            public void onCancel() {
+                toast(MainActivity.this, "Login cancelled");
+            }
+
+            @Override
+            public void onError(final FacebookException error) {
+                toast(MainActivity.this, "Login error :( Please try again.");
+                Log.e(TAG, "facebook login failed", error);
+            }
+        });
+
+        init();
+    }
+
+    /**
+     * TODO: Needs a better name.
+     */
+    private void init() {
+        if (FacebookUtils.isLoggedIn()) {
+            Horoscope savedHoroscope = SharedPreferencesUtils.getTodaysHoroscope(this);
+            if (savedHoroscope != null) {
+                setTodaysHoroscope(savedHoroscope);
+            } else {
+                loadTodaysHoroscope();
+            }
         } else {
-            loadTodaysHoroscope();
+            _todaysHoroscope.setText(R.string.not_logged_in_warning);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        _callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     private void setTodaysHoroscope(Horoscope horoscope) {

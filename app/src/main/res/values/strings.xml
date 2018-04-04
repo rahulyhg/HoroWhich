@@ -7,4 +7,7 @@
     <string name="done">Done</string>
     <string name="_0">0</string>
     <string name="no_horoscope_today">No horoscope today.</string>
+    <string name="not_logged_in_warning">You are not logged in. Please log in via the Facebook button below to see your
+        horoscope.
+    </string>
 </resources>
