@@ -22,18 +22,28 @@ public final class SharedPreferencesUtils {
         SharedPreferences horoscopePrefs = getHoroscopePrefs(context);
         long creationTime = horoscopePrefs.getLong(TODAYS_HOROSCOPE_CREATION_TIME_KEY, -1);
         @Nullable String horoscopeText = horoscopePrefs.getString(TODAYS_HOROSCOPE_TEXT_KEY, null);
+
+        /**
+         * TODO: Need to do something when not in debug mode and implement XOR for this.
+         * */
+        if((creationTime == -1 && horoscopeText != null) || (creationTime > -1 && horoscopeText == null)) {
+            if(DebugUtils.DEBUG_MODE) {
+                throw new IllegalStateException("corrupt horoscope in shared preferences");
+            }
+        }
+
         if (creationTime > -1 && horoscopeText != null) {
             Horoscope horoscope = new Horoscope(creationTime, horoscopeText);
             long horoscopeSaveTime = horoscopePrefs.getLong(TODAYS_HOROSCOPE_SAVE_TIME_KEY, -1);
-            if(horoscopeSaveTime == -1) {
-                if(DebugUtils.DEBUG_MODE) {
+            if (horoscopeSaveTime == -1) {
+                if (DebugUtils.DEBUG_MODE) {
                     throw new IllegalStateException("no save time for horoscope");
-                }else {
+                } else {
                     return horoscope;
                 }
             }
 
-            if (TimeUtils.happenedYesterday(horoscopeSaveTime)) {
+            if (TimeUtils.happenedToday(horoscopeSaveTime)) {
                 return horoscope;
             } else {
                 horoscopePrefs.edit()
@@ -46,13 +56,18 @@ public final class SharedPreferencesUtils {
         return null;
     }
 
+    /**
+     * TODO: Turn that exception into a checked exception.
+     * */
     @SuppressLint("ApplySharedPref")
     public static void setTodaysHoroscope(Context context, Horoscope horoscope) {
-        getHoroscopePrefs(context).edit()
+        boolean success = getHoroscopePrefs(context).edit()
                 .putLong(TODAYS_HOROSCOPE_SAVE_TIME_KEY, System.currentTimeMillis())
                 .putLong(TODAYS_HOROSCOPE_CREATION_TIME_KEY, horoscope.getCreationTimeMillis())
                 .putString(TODAYS_HOROSCOPE_TEXT_KEY, horoscope.getText())
                 .commit();
+
+        if(!success) throw new RuntimeException("horoscope not saved to shared preference");
     }
 
     private static SharedPreferences getHoroscopePrefs(Context context) {

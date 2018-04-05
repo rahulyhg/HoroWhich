@@ -2,9 +2,21 @@ package ie.moses.horowhich;
 
 import org.joda.time.DateTime;
 
+/**
+ * TODO: Duplicate code.
+ * */
 public final class TimeUtils {
 
     private TimeUtils() {
+    }
+
+    public static boolean happenedToday(final long timeMillis) {
+        DateTime now = new DateTime();
+        DateTime startOfToday = toStartOfDay(now);
+        DateTime endOfToday = toEndOfDay(now);
+
+        return timeMillis > startOfToday.getMillis() &&
+                timeMillis < endOfToday.getMillis();
     }
 
     public static boolean happenedYesterday(final long timeMillis) {
