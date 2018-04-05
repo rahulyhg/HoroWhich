@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
      * TODO: Sloppy, needs redesign.
      */
 //    private DatabaseReference horoscopesRef;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,9 +113,7 @@ public class MainActivity extends AppCompatActivity {
                     _noHoroscopesMessage.setVisibility(noHoroscopes ? View.VISIBLE : View.GONE);
 
                     List<Horoscope> newHoroscopes = new ArrayList<>();
-                    // If there are no new horoscopes try to find
-                    // the most recent old horoscope to use instead.
-                    Horoscope oldHoroscope = null;
+                    List<Horoscope> oldHoroscopes = new ArrayList<>();
 
                     // Reverse horoscopes so you're seeing most recent to least.
                     Collections.reverse(horoscopes);
@@ -130,12 +127,15 @@ public class MainActivity extends AppCompatActivity {
                          * aspect of it but also make them like fun time bombs where people
                          * are like (oh yeah, I wrote that one for you ages ago!).
                          * */
-                        if (TimeUtils.happenedYesterday(horoscope.getCreationTimeMillis())) {
+                        /**
+                         * TODO: Added "happenedToday" check to address the todo above but haven't tested it.
+                         * */
+                        long horoscopeCreationTimeMillis = horoscope.getCreationTimeMillis();
+                        if (TimeUtils.happenedYesterday(horoscopeCreationTimeMillis) ||
+                                TimeUtils.happenedToday(horoscopeCreationTimeMillis)) {
                             newHoroscopes.add(horoscope);
                         } else {
-                            if (oldHoroscope == null) {
-                                oldHoroscope = horoscope;
-                            }
+                            oldHoroscopes.add(horoscope);
                         }
                     }
 
@@ -143,8 +143,8 @@ public class MainActivity extends AppCompatActivity {
 
                     if (!newHoroscopes.isEmpty()) {
                         todaysHoroscope = CollectionUtils.getRandomElement(newHoroscopes);
-                    } else if (oldHoroscope != null) {
-                        todaysHoroscope = oldHoroscope;
+                    } else if (!oldHoroscopes.isEmpty()) {
+                        todaysHoroscope = CollectionUtils.getRandomElement(oldHoroscopes);
                     }
 
                     if (todaysHoroscope != null) {
