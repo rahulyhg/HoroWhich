@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    @BindView(R.id.no_horoscopes_view) View _noHoroscopesView;
+    @BindView(R.id.no_horoscopes_view) View _noHoroscopesMessage;
     @BindView(R.id.star_sign_background) ImageView _starSignBackground;
     @BindView(R.id.todays_horoscope) TextView _todaysHoroscope;
     @BindView(R.id.login_button) LoginButton _facebookLoginButton;
@@ -44,8 +44,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.bind(this);
-
-        Log.i("mo", "profile id = " + Profile.getCurrentProfile().getId());
 
         if (FacebookUtils.isLoggedIn()) {
             /**
@@ -113,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                      * TODO: Sloppy, needs rethinking.
                      * */
                     boolean noHoroscopes = horoscopes.isEmpty() && savedHoroscope == null;
-                    _noHoroscopesView.setVisibility(noHoroscopes ? View.VISIBLE : View.GONE);
+                    _noHoroscopesMessage.setVisibility(noHoroscopes ? View.VISIBLE : View.GONE);
 
                     List<Horoscope> newHoroscopes = new ArrayList<>();
                     // If there are no new horoscopes try to find
@@ -142,9 +140,9 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     if (todaysHoroscope != null) {
-                        FirebaseUtils.deleteHoroscope(Profile.getCurrentProfile().getId(), todaysHoroscope);
                         SharedPreferencesUtils.setTodaysHoroscope(MainActivity.this, todaysHoroscope);
                         _todaysHoroscope.setText(todaysHoroscope.getText());
+                        FirebaseUtils.deleteHoroscope(Profile.getCurrentProfile().getId(), todaysHoroscope);
                     } else {
                         Log.e(TAG, "today's horoscope is null");
                     }
