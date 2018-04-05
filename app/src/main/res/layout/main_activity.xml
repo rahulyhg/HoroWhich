@@ -25,6 +25,7 @@
                 android:gravity="center"
                 android:textSize="30sp"
                 android:textColor="#9f9898"
+                tools:visibility="gone"
                 tools:text="You're getting the ride today."/>
     </FrameLayout>
 
@@ -50,6 +51,24 @@
                 android:textColor="#9f9898"
                 android:text="@string/no_horoscope_today"/>
 
+    </FrameLayout>
+
+    <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+        <TextView
+                android:id="@+id/not_logged_in_warning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginBottom="50dp"
+                android:gravity="center"
+                android:textSize="30sp"
+                android:textColor="#9f9898"
+                android:visibility="gone"
+                android:text="@string/not_logged_in_warning"/>
     </FrameLayout>
 
     <com.facebook.login.widget.LoginButton
