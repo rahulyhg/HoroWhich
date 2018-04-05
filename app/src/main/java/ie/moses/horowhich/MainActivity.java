@@ -122,6 +122,14 @@ public class MainActivity extends AppCompatActivity {
                     Collections.reverse(horoscopes);
                     for (int i = 0; i < horoscopes.size(); i++) {
                         Horoscope horoscope = horoscopes.get(i);
+                        /**
+                         * TODO: Doesn't account for horoscopes written today.
+                         * Need to prefer horoscopes written yesterday? Or just select
+                         * them completely at random so you never know when your horoscopes
+                         * are going to be seen? That could take away from the social/messaging
+                         * aspect of it but also make them like fun time bombs where people
+                         * are like (oh yeah, I wrote that one for you ages ago!).
+                         * */
                         if (TimeUtils.happenedYesterday(horoscope.getCreationTimeMillis())) {
                             newHoroscopes.add(horoscope);
                         } else {
