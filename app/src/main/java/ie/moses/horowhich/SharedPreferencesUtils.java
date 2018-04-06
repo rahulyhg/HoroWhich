@@ -74,4 +74,9 @@ public final class SharedPreferencesUtils {
         return context.getSharedPreferences(HOROSCOPE_PREFS, Context.MODE_PRIVATE);
     }
 
+    @SuppressLint("ApplySharedPref")
+    public static void clear(Context context) {
+        getHoroscopePrefs(context).edit().clear().commit();
+    }
+
 }

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent" android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FFFFFF">
 
     <EditText
             android:id="@+id/write_horoscope"
@@ -9,7 +11,6 @@
             android:layout_height="match_parent"
             android:gravity="top|start"
             android:padding="20dp"
-            android:layout_above="@+id/cancel_button"
             android:background="#FFFFFF"
             android:textSize="20sp"
             android:maxLength="140"
@@ -25,7 +26,7 @@
             android:layout_marginLeft="50dp"
             android:layout_marginStart="50dp"
             android:text="@string/cancel"
-            android:background="#FFFFFF"
+            android:background="#f4f0f0"
             android:layout_marginBottom="30dp"/>
 
     <Button
@@ -37,7 +38,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginRight="50dp"
             android:layout_marginEnd="50dp"
-            android:background="#FFFFFF"
+            android:background="#f4f0f0"
             android:text="@string/done"
             android:layout_marginBottom="30dp"/>
 

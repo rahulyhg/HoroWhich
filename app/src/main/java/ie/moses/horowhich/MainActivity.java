@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    @BindView(R.id.toolbar) Toolbar _toolbar;
     @BindView(R.id.no_horoscopes_view) View _noHoroscopesMessage;
     @BindView(R.id.star_sign_background) ImageView _starSignBackground;
     @BindView(R.id.todays_horoscope) TextView _todaysHoroscope;
@@ -37,28 +38,16 @@ public class MainActivity extends AppCompatActivity {
 
     private CallbackManager _callbackManager;
 
-    /**
-     * TODO: Sloppy, needs redesign.
-     */
-//    private DatabaseReference horoscopesRef;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startService(new Intent(this, NewHoroscopeNotificationService.class));
         setContentView(R.layout.main_activity);
         ButterKnife.bind(this);
-
-        // sets up activity toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.showOverflowMenu();
+        setSupportActionBar(_toolbar);
+        _toolbar.showOverflowMenu();
 
         if (FacebookUtils.isLoggedIn()) {
-            /**
-             * TODO: Need to have a check for profile so
-             * this method can run the tracker for itself and wait.
-             * But not sure weather this should be inside the method or
-             * outside it.
-             * */
             loadTodaysHoroscope();
         } else {
             _notLoggedInWarning.setVisibility(View.VISIBLE);
@@ -70,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
                     new ProfileTracker() {
                         @Override
                         protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                            Log.i("mo", "user id = " + Profile.getCurrentProfile().getId());
                             _notLoggedInWarning.setVisibility(View.GONE);
                             loadTodaysHoroscope();
                         }
@@ -88,6 +78,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                if (currentAccessToken == null) {
+                    toast(MainActivity.this, "Logged out");
+                    SharedPreferencesUtils.clear(MainActivity.this);
+                    recreate();
+                }
+            }
+        };
     }
 
     @Override
@@ -105,19 +106,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.write_horoscope: startActivity(new Intent(this, FriendsActivity.class)); break;
+            case R.id.write_horoscope:
+                startActivity(new Intent(this, FriendsActivity.class));
+                break;
         }
         return false;
     }
 
     /**
-     * TODO: Keeps registering identical listeners that all get called every time.
+     * TODO: Keeps registering identical listeners that all get called every time?
      */
     private void loadTodaysHoroscope() {
         Profile currentProfile = Profile.getCurrentProfile();
-        if (currentProfile == null) throw new RuntimeException();
 
-        if (currentProfile != null) {
+        if (currentProfile == null) {
+            new ProfileTracker() {
+                @Override
+                protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                    loadTodaysHoroscope();
+                }
+            };
+        } else {
             DatabaseReference horoscopesRef = FirebaseUtils.getHoroscopesDatabaseReference(currentProfile.getId());
             horoscopesRef.addValueEventListener(new HoroscopesValueEventListener() {
                 @Override

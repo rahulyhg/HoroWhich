@@ -11,50 +11,6 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/super_light_purple"
             android:scrollbars="vertical"/>
-
-    <com.facebook.login.widget.LoginButton
-            android:id="@+id/login_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="30dp"
-            android:layout_marginTop="30dp"/>
-
-    <TextView
-            android:id="@+id/new_horoscopes_counter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/circle"
-            android:textSize="24sp"
-            android:gravity="center"
-            android:layout_gravity="bottom|end"
-            android:layout_marginBottom="45dp"
-            android:layout_marginRight="10dp"
-            android:clickable="true"
-            android:layout_marginEnd="10dp"
-            android:focusable="true"
-            android:text="@string/_0"
-            tools:text="2"/>
-
-    <FrameLayout
-            android:id="@+id/splash_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:visibility="gone"
-            android:background="@color/purple">
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="casual"
-                android:text="@string/horowhich"
-                android:textColor="#FFFFFF"
-                android:textSize="60sp"
-                android:textStyle="bold"/>
-
-    </FrameLayout>
 
 </FrameLayout>
