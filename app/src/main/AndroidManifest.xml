@@ -3,8 +3,9 @@
           package="ie.moses.horowhich">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
             android:name=".HoroWhichApplication"
@@ -30,19 +31,12 @@
                 android:label="@string/app_name"/>
         <activity android:name=".WriteHoroscopeActivity"/>
         <activity android:name=".FriendsActivity"/>
-        <service
-                android:name=".FirebaseInstanceIdService">
+        <receiver android:name="ie.moses.horowhich.BootReceiver">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
-        </service>
-        <service
-                android:name=".FirebaseMessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
-        <service android:name=".NewHoroscopeNotificationService"/>
+        </receiver>
+        <service android:name=".NotificationService"/>
     </application>
 
 </manifest>

@@ -17,6 +17,10 @@ public final class SharedPreferencesUtils {
     private SharedPreferencesUtils() {
     }
 
+    public static boolean hasTodaysHoroscope(Context context) {
+        return getTodaysHoroscope(context) != null;
+    }
+
     @Nullable
     public static Horoscope getTodaysHoroscope(Context context) {
         SharedPreferences horoscopePrefs = getHoroscopePrefs(context);
