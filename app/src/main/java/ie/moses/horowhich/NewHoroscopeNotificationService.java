@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -63,25 +64,32 @@ public class NewHoroscopeNotificationService extends Service {
         }
     }
 
+    /**
+     * TODO: Should be moved to util class.
+     * */
     private void showNotification(String title, String content) {
-        NotificationManager mNotificationManager =
+        NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("default",
                     "YOUR_CHANNEL_NAME",
                     NotificationManager.IMPORTANCE_DEFAULT);
             channel.setDescription("YOUR_NOTIFICATION_CHANNEL_DISCRIPTION");
-            mNotificationManager.createNotificationChannel(channel);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }else if (DebugUtils.DEBUG_MODE){
+                throw new IllegalStateException("notifi");
+            }
         }
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "default")
-                .setSmallIcon(R.mipmap.ic_launcher) // notification icon
+                .setSmallIcon(R.drawable.leo_icon_light) // notification icon
                 .setContentTitle(title) // title for notification
                 .setContentText(content)// message for notification
-//                .setSound(alarmSound) // set alarm sound for notification
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)) // set alarm sound for notification
                 .setAutoCancel(true); // clear notification after click
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pi);
-        mNotificationManager.notify(0, mBuilder.build());
+        notificationManager.notify(0, mBuilder.build());
     }
 }

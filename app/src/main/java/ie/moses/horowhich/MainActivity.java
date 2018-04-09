@@ -41,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(!InternetUtils.isNetworkAvailable(this)) {
+            toast(this, "Not connected to the internet.");
+            finish();
+        }
+
         startService(new Intent(this, NewHoroscopeNotificationService.class));
         setContentView(R.layout.main_activity);
         ButterKnife.bind(this);
