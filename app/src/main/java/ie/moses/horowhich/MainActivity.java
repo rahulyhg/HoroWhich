@@ -192,7 +192,8 @@ public class MainActivity extends AppCompatActivity {
 
                     if (todaysHoroscope != null) {
                         SharedPreferencesUtils.setTodaysHoroscope(MainActivity.this, todaysHoroscope);
-                        Log.i("mo", "today's horoscope saved = " + SharedPreferencesUtils.getTodaysHoroscope(MainActivity.this));
+                        Log.i(TAG, "today's horoscope saved = " +
+                                SharedPreferencesUtils.getTodaysHoroscope(MainActivity.this));
                         _todaysHoroscope.setText(todaysHoroscope.getText());
                         FirebaseUtils.deleteHoroscope(Profile.getCurrentProfile().getId(), todaysHoroscope);
                     } else {
