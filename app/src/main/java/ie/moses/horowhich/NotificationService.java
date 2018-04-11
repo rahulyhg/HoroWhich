@@ -44,17 +44,15 @@ public class NotificationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(_serviceStarted) {
-            Log.w(TAG, "notification service already started...");
-            return super.onStartCommand(intent, flags, startId);
-        }else {
-            _serviceStarted = true;
-        }
-
-        Log.i(TAG, "notification service started");
-
         if (Profile.getCurrentProfile() != null) {
-            Log.i(TAG, "current profile found");
+            if(_serviceStarted) {
+                Log.w(TAG, "notification service already started...");
+                return super.onStartCommand(intent, flags, startId);
+            }else {
+                Log.i(TAG, "notification service started");
+                _serviceStarted = true;
+            }
+
             _horoscopeReference = FirebaseUtils.getHoroscopesDatabaseReference(Profile.getCurrentProfile().getId());
             _horoscopeReference.addValueEventListener(new HoroscopesValueEventListener() {
 
@@ -72,8 +70,14 @@ public class NotificationService extends Service {
                         if (newHoroscope && !SharedPreferencesUtils.hasTodaysHoroscope(NotificationService.this)) {
                             Log.d(TAG, "new horoscope notification");
                             showNotification("New Horoscope!", horoscopes.get(horoscopes.size() - 1).getText());
-                        }else if(!newHoroscope) {
-                            Log.d(TAG, "no new horoscope to display");
+//                        }else if(!newHoroscope) {
+                            /**
+                             * TODO: Doesn't make sense because always appears right after "new horoscope notification"
+                             * due to onDataChanged() being called a second time when the app removes that horoscope
+                             * from firebase once it's fetched it. Consider making a new EventValueListener which shows
+                             * if an item has been added or deleted (and the item which was added or deleted).
+                             * */
+//                            Log.d(TAG, "no new horoscope to display");
                         }else if(!SharedPreferencesUtils.hasTodaysHoroscope(NotificationService.this)) {
                             Log.d(TAG, "already have a horoscope for today");
                         }
