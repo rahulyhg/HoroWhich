@@ -42,7 +42,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.i();
+        if(DebugUtils.DEBUG_MODE) {
+            if(Profile.getCurrentProfile() != null) {
+                Log.i("mo", "current profile = " + Profile.getCurrentProfile());
+            }
+        }
 
         if(!InternetUtils.isNetworkAvailable(this)) {
             toast(this, "Not connected to the internet.");
