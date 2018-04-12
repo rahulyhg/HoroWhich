@@ -71,9 +71,15 @@ public class MainActivity extends AppCompatActivity {
                     new ProfileTracker() {
                         @Override
                         protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                            Log.i("mo", "user id = " + Profile.getCurrentProfile().getId());
-                            _notLoggedInWarning.setVisibility(View.GONE);
-                            loadTodaysHoroscope();
+                            // Current profile will be null in the event that the user has logged out.
+                            if(currentProfile != null) {
+                                Log.i(TAG, "profile changed, new user = " +
+                                        currentProfile.getId() + ": " + currentProfile.getName());
+                                _notLoggedInWarning.setVisibility(View.GONE);
+                                loadTodaysHoroscope();
+                            }else {
+                                Log.i(TAG, "current profile changed to null, user logged out...");
+                            }
                         }
                     };
                 }
@@ -95,9 +101,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
                 if (currentAccessToken == null) {
+                    Log.i(TAG, "auth token is null, user logged out...");
                     toast(MainActivity.this, "Logged out");
                     SharedPreferencesUtils.clear(MainActivity.this);
                     recreate();
+                }else {
+                    Log.i(TAG, "new auth token " + currentAccessToken);
                 }
             }
         };
@@ -197,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
                         _todaysHoroscope.setText(todaysHoroscope.getText());
                         FirebaseUtils.deleteHoroscope(Profile.getCurrentProfile().getId(), todaysHoroscope);
                     } else {
-                        Log.e(TAG, "today's horoscope is null");
+                        Log.v(TAG, "no horoscope today");
                     }
                 }
 
