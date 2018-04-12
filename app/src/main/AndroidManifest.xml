@@ -29,7 +29,8 @@
                 android:name="com.facebook.FacebookActivity"
                 android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
                 android:label="@string/app_name"/>
-        <activity android:name=".WriteHoroscopeActivity"/>
+        <activity android:name=".WriteHoroscopeActivity"
+                  android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".FriendsActivity"/>
         <receiver android:name="ie.moses.horowhich.BootReceiver">
             <intent-filter>
