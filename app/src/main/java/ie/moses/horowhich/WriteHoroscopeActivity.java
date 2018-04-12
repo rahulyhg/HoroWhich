@@ -51,7 +51,7 @@ public class WriteHoroscopeActivity extends AppCompatActivity implements TextWat
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         _characterCounter.setText(String.valueOf(charSequence.length()));
-        if(charSequence.length() == 250) {
+        if(charSequence.length() == 140) {
             _characterCounter.setTextColor(Color.rgb(223,7,7));
         }else {
             _characterCounter.setTextColor(Color.rgb(134,129,129));

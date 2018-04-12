@@ -13,8 +13,8 @@
             android:padding="20dp"
             android:background="#FFFFFF"
             android:textSize="20sp"
-            android:maxLength="250"
-            android:inputType="textMultiLine"
+            android:maxLength="140"
+            android:inputType="textMultiLine|textCapSentences"
             android:layout_above="@+id/buttons"
             tools:text="You're getting the ride today."/>
 
@@ -42,9 +42,7 @@
                 android:textColor="#868181"
                 android:textSize="12sp"
                 android:text="@string/_0"
-                android:layout_gravity="center"
-                tools:visibility="visible"
-                tools:text="140"/>
+                android:layout_gravity="center"/>
 
         <Button
                 android:id="@+id/done_button"
