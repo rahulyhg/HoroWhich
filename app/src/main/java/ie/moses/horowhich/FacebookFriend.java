@@ -18,4 +18,12 @@ public class FacebookFriend {
         return _id;
     }
 
+    @Override
+    public String toString() {
+        return "FacebookFriend{" +
+                "_name='" + _name + '\'' +
+                ", _id='" + _id + '\'' +
+                '}';
+    }
+
 }
