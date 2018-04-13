@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(DebugUtils.DEBUG_MODE) {
             if(Profile.getCurrentProfile() != null) {
-                Log.i("mo", "current profile = " + Profile.getCurrentProfile());
+                Log.i("mo", "current profile = " + FacebookUtils.toString(Profile.getCurrentProfile()));
             }
         }
 
@@ -73,8 +73,7 @@ public class MainActivity extends AppCompatActivity {
                         protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
                             // Current profile will be null in the event that the user has logged out.
                             if(currentProfile != null) {
-                                Log.i(TAG, "profile changed, new user = " +
-                                        currentProfile.getId() + ": " + currentProfile.getName());
+                                Log.i(TAG, "profile changed, new user = " + FacebookUtils.toString(currentProfile));
                                 _notLoggedInWarning.setVisibility(View.GONE);
                                 loadTodaysHoroscope();
                             }else {
