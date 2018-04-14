@@ -8,19 +8,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static ie.moses.horowhich.CollectionUtils.list;
-
 /**
  * TODO: Can be extrapolated out into a generic recycler grid view.
- * */
+ */
 class FriendsListAdapter extends RecyclerView.Adapter {
 
     private static final String TAG = FriendsListAdapter.class.getSimpleName();
@@ -34,16 +28,13 @@ class FriendsListAdapter extends RecyclerView.Adapter {
 
     public FriendsListAdapter(final Context context, final List<FacebookFriend> friends, @Nullable OnItemClickListener listener) {
         _context = context;
-        _facebookFriends =
-//                list(friends.get(0), friends.get(1), friends.get(2));
-                new ArrayList<>(friends);
+        _facebookFriends = new ArrayList<>(friends);
         _onItemClickListener = listener;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
-        Log.i("mo", "created view holder");
         LayoutInflater inflater = LayoutInflater.from(_context);
         View layout = inflater.inflate(R.layout.friends_list_row, parent, false);
         return new ViewHolder(layout);
@@ -53,52 +44,66 @@ class FriendsListAdapter extends RecyclerView.Adapter {
      * TODO: Don't forget to set visibility.
      */
     @Override
-    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int row) {
-//        ((FriendView) holder.itemView).setName(facebookFriend.getName());
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
+        final int row = position * _rowSize;
+        final int leftIndex = row;
+        final int centerIndex = row + 1;
+        final int rightIndex = row + 2;
 
-        Log.i("mo", "bind view holder for row " + row);
+        Log.i(TAG, "binding view holder for row " + row);
 
-        ((ViewHolder) holder)._leftImage.setOnClickListener(view -> {
+        ViewHolder viewHolder = (ViewHolder) holder;
+
+        viewHolder._left.setOnClickListener(view -> {
             if (_onItemClickListener != null) {
-                _onItemClickListener.onItemClicked(row * _rowSize);
+                _onItemClickListener.onItemClicked(leftIndex);
             }
         });
 
-        ((ViewHolder) holder)._centerImage.setOnClickListener(view -> {
+        viewHolder._center.setOnClickListener(view -> {
             if (_onItemClickListener != null) {
-                _onItemClickListener.onItemClicked((row * _rowSize) + 1);
+                _onItemClickListener.onItemClicked(centerIndex);
             }
         });
 
-        ((ViewHolder) holder)._rightImage.setOnClickListener(view -> {
+        viewHolder._right.setOnClickListener(view -> {
             if (_onItemClickListener != null) {
-                _onItemClickListener.onItemClicked((row * _rowSize) + 2);
+                _onItemClickListener.onItemClicked(rightIndex);
             }
         });
 
-        bindProfilePic(((ViewHolder) holder)._leftImage, _facebookFriends.get(row * _rowSize));
+        FacebookFriend leftFacebookFriend = _facebookFriends.get(leftIndex);
+        bindViewHolder(viewHolder._left, leftFacebookFriend);
 
-        if(_facebookFriends.size() > ((row * _rowSize) + 1)) {
-            bindProfilePic(((ViewHolder) holder)._centerImage, _facebookFriends.get((row * _rowSize) + 1));
-        }else {
-            Log.i("mo", "no image for position " + ((row * _rowSize) + 1));
+        if (_facebookFriends.size() > centerIndex) {
+            viewHolder._center.setVisibility(View.VISIBLE);
+            FacebookFriend centerFriend = _facebookFriends.get(centerIndex);
+            bindViewHolder(viewHolder._center, centerFriend);
+        } else {
+            viewHolder._center.setVisibility(View.INVISIBLE);
+            Log.i(TAG, "no image for position " + centerIndex);
         }
 
-        if(_facebookFriends.size() > ((row * _rowSize) + 2)) {
-            bindProfilePic(((ViewHolder) holder)._rightImage, _facebookFriends.get((row * _rowSize) + 2));
-        }else {
-            Log.i("mo", "no image for position " + ((row * _rowSize) + 2));
+        if (_facebookFriends.size() > rightIndex) {
+            viewHolder._right.setVisibility(View.VISIBLE);
+            FacebookFriend rightFriend = _facebookFriends.get(rightIndex);
+            bindViewHolder(viewHolder._right, rightFriend);
+        } else {
+            viewHolder._right.setVisibility(View.INVISIBLE);
+            Log.i(TAG, "no image for position " + rightIndex);
         }
     }
 
-    private void bindProfilePic(ImageView imageView, FacebookFriend facebookFriend) {
+    /**
+     * TODO: Needs a better name.
+     */
+    private static void bindViewHolder(FriendView friendView, FacebookFriend facebookFriend) {
+        friendView.setName(facebookFriend.getName());
         GraphUtils.makeUserProfilePicGraphRequest(facebookFriend.getId(), new TryFailCallback<String>() {
             @Override
             public void call(String profilePicUrl) {
-                Log.i("mo", "bound profile pic to image view");
-                Glide.with(_context)
-                        .load(profilePicUrl)
-                        .into(imageView);
+                Log.i(TAG, "bound profile pic " + profilePicUrl + " to image view");
+                friendView.setProfilePic(profilePicUrl);
             }
 
             @Override
@@ -121,20 +126,15 @@ class FriendsListAdapter extends RecyclerView.Adapter {
 
     private static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView _leftImage;
-        private TextView _leftText;
-
-        private ImageView _centerImage;
-        private TextView _centerTextView;
-
-        private ImageView _rightImage;
-        private TextView _rightTextView;
+        private FriendView _left;
+        private FriendView _center;
+        private FriendView _right;
 
         public ViewHolder(final View itemView) {
             super(itemView);
-            _leftImage = itemView.findViewById(R.id.left_image);
-            _centerImage = itemView.findViewById(R.id.center_image);
-            _rightImage = itemView.findViewById(R.id.right_image);
+            _left = itemView.findViewById(R.id.left);
+            _center = itemView.findViewById(R.id.center);
+            _right = itemView.findViewById(R.id.right);
         }
     }
 

@@ -11,9 +11,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import com.facebook.*;
+
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.database.DatabaseError;
@@ -23,8 +28,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static ie.moses.horowhich.ToastUtils.toast;
 
+/**
+ * TODO: Parts of this class could be extrapolated out into a general purpose FacebookActivity.
+ * */
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -42,13 +53,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(DebugUtils.DEBUG_MODE) {
-            if(Profile.getCurrentProfile() != null) {
+        if (DebugUtils.DEBUG_MODE) {
+            if (Profile.getCurrentProfile() != null) {
                 Log.i("mo", "current profile = " + FacebookUtils.toString(Profile.getCurrentProfile()));
             }
         }
 
-        if(!InternetUtils.isNetworkAvailable(this)) {
+        if (!InternetUtils.isNetworkAvailable(this)) {
             toast(this, "Not connected to the internet.");
             finish();
         }
@@ -68,19 +79,7 @@ public class MainActivity extends AppCompatActivity {
             _facebookLoginButton.registerCallback(_callbackManager, new FacebookCallback<LoginResult>() {
                 @Override
                 public void onSuccess(final LoginResult loginResult) {
-                    new ProfileTracker() {
-                        @Override
-                        protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                            // Current profile will be null in the event that the user has logged out.
-                            if(currentProfile != null) {
-                                Log.i(TAG, "profile changed, new user = " + FacebookUtils.toString(currentProfile));
-                                _notLoggedInWarning.setVisibility(View.GONE);
-                                loadTodaysHoroscope();
-                            }else {
-                                Log.i(TAG, "current profile changed to null, user logged out...");
-                            }
-                        }
-                    };
+                    Log.i(TAG, "successfully logged in");
                 }
 
                 @Override
@@ -96,6 +95,15 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+        new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                if(currentProfile != null) {
+                    Log.i(TAG, "new profile logged in " + FacebookUtils.toString(currentProfile));
+                }
+            }
+        };
+
         new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
@@ -104,8 +112,10 @@ public class MainActivity extends AppCompatActivity {
                     toast(MainActivity.this, "Logged out");
                     SharedPreferencesUtils.clear(MainActivity.this);
                     recreate();
-                }else {
+                } else {
                     Log.i(TAG, "new auth token " + currentAccessToken);
+                    _notLoggedInWarning.setVisibility(View.GONE);
+                    loadTodaysHoroscope();
                 }
             }
         };
@@ -140,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
         Profile currentProfile = Profile.getCurrentProfile();
 
         if (currentProfile == null) {
+            Profile.fetchProfileForCurrentAccessToken();
             new ProfileTracker() {
                 @Override
                 protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {

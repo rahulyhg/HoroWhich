@@ -9,4 +9,5 @@
     <string name="no_horoscope_today">No horoscope today.</string>
     <string name="not_logged_in_warning">You are not logged in. Please log in via the Facebook button below to see your horoscope.</string>
     <string name="write_horoscope_for_friend">Write horoscope for friend.</string>
+    <string name="friends">Friends</string>
 </resources>

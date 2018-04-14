@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ public class FriendsActivity extends AppCompatActivity {
 
     private static final String TAG = FriendsActivity.class.getSimpleName();
 
+    @BindView(R.id.toolbar) Toolbar _toolbar;
     @BindView(R.id.recycler_view) RecyclerView _recyclerView;
 
     @Override
@@ -34,6 +36,8 @@ public class FriendsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.friends_activity);
         ButterKnife.bind(this);
+        setSupportActionBar(_toolbar);
+        _toolbar.showOverflowMenu();
 
         if (FacebookUtils.isLoggedIn()) {
             loadFriendsList();

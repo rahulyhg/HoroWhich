@@ -2,12 +2,15 @@ package ie.moses.horowhich;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.bumptech.glide.Glide;
 
 public class FriendView extends FrameLayout {
 
@@ -25,6 +28,7 @@ public class FriendView extends FrameLayout {
     }
 
     public void setName(CharSequence name) {
+        Log.i("mo", this + ": setName(" + name + ")");
         _name.setText(name);
     }
 
