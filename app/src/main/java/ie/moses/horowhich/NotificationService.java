@@ -22,9 +22,9 @@ public class NotificationService extends Service {
 
     private static final String TAG = NotificationService.class.getCanonicalName();
 
-    public static final String HAS_NEW_HOROSCOPE = "HAS_NEW_HOROSCOPE";
-    public static final String NEW_HOROSCOPE = "NEW_HOROSCOPE";
-
+    /**
+     * TODO: Can this field be local variable? Will it get garbage collected?
+     * */
     private DatabaseReference _horoscopeReference;
     private List<Horoscope> _horoscopes;
 
