@@ -31,7 +31,7 @@ public final class SharedPreferencesUtils {
          * TODO: Need to do something when not in debug mode and implement XOR for this.
          * */
         if((creationTime == -1 && horoscopeText != null) || (creationTime > -1 && horoscopeText == null)) {
-            if(DebugUtils.DEBUG_MODE) {
+            if(DebugUtils.IS_IN_DEBUG_MODE) {
                 throw new IllegalStateException("corrupt horoscope in shared preferences");
             }
         }
@@ -40,7 +40,7 @@ public final class SharedPreferencesUtils {
             Horoscope horoscope = new Horoscope(creationTime, horoscopeText);
             long horoscopeSaveTime = horoscopePrefs.getLong(TODAYS_HOROSCOPE_SAVE_TIME_KEY, -1);
             if (horoscopeSaveTime == -1) {
-                if (DebugUtils.DEBUG_MODE) {
+                if (DebugUtils.IS_IN_DEBUG_MODE) {
                     throw new IllegalStateException("no save time for horoscope");
                 } else {
                     return horoscope;

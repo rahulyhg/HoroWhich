@@ -1,5 +1,7 @@
 package ie.moses.horowhich;
 
+import android.util.Log;
+
 import org.joda.time.DateTime;
 
 /**
@@ -24,6 +26,10 @@ public final class TimeUtils {
         DateTime yesterday = now.minusDays(1);
         DateTime startOfYesterday = toStartOfDay(yesterday);
         DateTime endOfYesterday = toEndOfDay(yesterday);
+
+        String str = "help";
+
+        Log.i("mo", str);
 
         return timeMillis > startOfYesterday.getMillis() &&
                 timeMillis < endOfYesterday.getMillis();

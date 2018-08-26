@@ -8,6 +8,16 @@ public class FacebookFriend {
     public FacebookFriend(final String name, final String id) {
         _name = name;
         _id = id;
+
+        String string = "sdgweg2";
+        int stringLength = string.length();
+
+        boolean isEmpty = stringLength > 0 && string != null;
+
+
+        if(isEmpty) {
+            throw new RuntimeException("rebel");
+        }
     }
 
     public String getName() {

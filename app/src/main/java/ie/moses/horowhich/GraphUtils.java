@@ -43,6 +43,8 @@ public final class GraphUtils {
             facebookFriends.add(facebookFriend);
         }
 
+        GraphUtils.getFacebookFriends();
+
         return facebookFriends;
     }
 

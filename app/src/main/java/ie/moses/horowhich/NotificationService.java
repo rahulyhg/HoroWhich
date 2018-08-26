@@ -128,7 +128,7 @@ public class NotificationService extends Service {
             channel.setDescription("YOUR_NOTIFICATION_CHANNEL_DISCRIPTION");
             if (notificationManager != null) {
                 notificationManager.createNotificationChannel(channel);
-            } else if (DebugUtils.DEBUG_MODE) {
+            } else if (DebugUtils.IS_IN_DEBUG_MODE) {
                 throw new IllegalStateException("notifi");
             }
         }

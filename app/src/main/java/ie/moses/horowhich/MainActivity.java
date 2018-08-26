@@ -35,7 +35,7 @@ import static ie.moses.horowhich.ToastUtils.toast;
 
 /**
  * TODO: Parts of this class could be extrapolated out into a general purpose FacebookActivity.
- * */
+ */
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.todays_horoscope) TextView _todaysHoroscope;
     @BindView(R.id.login_button) LoginButton _facebookLoginButton;
     @BindView(R.id.not_logged_in_warning) TextView _notLoggedInWarning;
+    @BindView(R.id.no_internet_warning) TextView _noInternetWarning;
 
     private CallbackManager _callbackManager;
 
@@ -53,15 +54,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (DebugUtils.DEBUG_MODE) {
+        if (DebugUtils.IS_IN_DEBUG_MODE) {
             if (Profile.getCurrentProfile() != null) {
-                Log.i("mo", "current profile = " + FacebookUtils.toString(Profile.getCurrentProfile()));
+                Log.i("mo", "current profile = " +
+                        FacebookUtils.toString(Profile.getCurrentProfile()));
             }
-        }
-
-        if (!InternetUtils.isNetworkAvailable(this)) {
-            toast(this, "Not connected to the internet.");
-            finish();
         }
 
         startService(new Intent(this, NotificationService.class));
@@ -98,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                if(currentProfile != null) {
+                if (currentProfile != null) {
                     Log.i(TAG, "new profile logged in " + FacebookUtils.toString(currentProfile));
                 }
             }
@@ -214,7 +211,10 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(TAG, "today's horoscope saved = " +
                                 SharedPreferencesUtils.getTodaysHoroscope(MainActivity.this));
                         _todaysHoroscope.setText(todaysHoroscope.getText());
-                        FirebaseUtils.deleteHoroscope(Profile.getCurrentProfile().getId(), todaysHoroscope);
+                        /**
+                         * TODO: Add in listener to check for success, throw exception in debug mode if failed.
+                         * */
+                        FirebaseUtils.deleteHoroscope(currentProfile.getId(), todaysHoroscope);
                     } else {
                         Log.v(TAG, "no horoscope today");
                     }
